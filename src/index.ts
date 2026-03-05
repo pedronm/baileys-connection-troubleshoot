@@ -27,13 +27,13 @@ let logs: string[] = [];
 function osLog(){
     try{
         logger.info(`Iniciando Extração de dados da máquina Host`)
-        logger.info(`Plataforma que essa aplicação node esta rodando : ${os.platform}`)
-        logger.info(`Arquitetura da máquina: ${os.machine}`)
-        logger.info(`Prioridade de execução na máquina atual : ${os.setPriority}`)
-        logger.info(`Memória liberada no sistema : ${os.freemem}`)
-        logger.info(`Interfaces de rede : ${os.networkInterfaces}`)
-        logger.info(`Host permite paralelismo? : ${os.availableParallelism() > 0 ? `Capacidade total : ${os.availableParallelism}` : "Não" }`)
-        logger.info(`Diretório Raiz : ${os.homedir}`)
+        logger.info(`Plataforma que essa aplicação node esta rodando : ${os.platform()}`)
+        logger.info(`Arquitetura da máquina: ${os.machine()}`)
+        logger.info(`Prioridade de execução na máquina atual : ${os.getPriority()}`)
+        logger.info(`Memória(Real) liberada no sistema : ${ Math.round(os.freemem() / 1024 / 1024 / 1024)}GB`)
+        logger.info(`Interfaces de rede : ${JSON.stringify(os.networkInterfaces()) }`)
+        logger.info(`Host permite paralelismo? : ${os.availableParallelism() > 0 ? `Capacidade total : ${os.availableParallelism()}` : "Não" }`)
+        logger.info(`Diretório Raiz : ${os.homedir()}`)
     }catch (ex) {
         logger.error(`Ocorreu um erro ao extrair informações do sisteam! ${ex}`)
     }
