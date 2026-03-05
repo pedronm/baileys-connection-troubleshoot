@@ -19,7 +19,7 @@ const app = express();
 const port = 3001;
 
 let qrCodeData: string | null = null;
-let connectionStatus: string = 'Initializing...';
+let connectionStatus: string = 'Inicializando...';
 let connectionInfo: any = {};
 let logs: string[] = [];
 
@@ -32,7 +32,7 @@ function addLog(message: string) {
 }
 
 async function connectToWhatsApp() {
-    addLog('Starting Baileys connection...');
+    addLog('Iniciando conexão Baileys...');
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
     const { version } = await fetchLatestBaileysVersion()
 
@@ -47,38 +47,38 @@ async function connectToWhatsApp() {
         const { connection, lastDisconnect, qr } = update;
         
         if (connection) {
-            addLog(`Connection update: ${connection}`);
+            addLog(`Atualização de conexão: ${connection}`);
         }
 
         if (qr) {
             qrCodeData = await QRCode.toDataURL(qr);
-            connectionStatus = 'QR Code generated, please scan.';
-            addLog('New QR Code generated');
+            connectionStatus = 'QR Code gerado, por favor escaneie.';
+            addLog('Novo QR Code gerado');
         }
 
         if (connection === 'close') {
             const statusCode = (lastDisconnect?.error as Boom)?.output?.statusCode;
-            const reason = Object.entries(DisconnectReason).find(([_, v]) => v === statusCode)?.[0] || 'Unknown reason';
+            const reason = Object.entries(DisconnectReason).find(([_, v]) => v === statusCode)?.[0] || 'Razão desconhecida';
             const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
             
-            connectionStatus = `Closed: ${reason} (${statusCode}). Reconnecting: ${shouldReconnect}`;
-            addLog(`Connection closed. Reason: ${reason} (${statusCode}). Error: ${lastDisconnect?.error?.message}. Reconnecting: ${shouldReconnect}`);
+            connectionStatus = `Fechado: ${reason} (${statusCode}). Reconectando: ${shouldReconnect ? 'Sim' : 'Não'}`;
+            addLog(`Conexão fechada. Razão: ${reason} (${statusCode}). Erro: ${lastDisconnect?.error?.message}. Reconectando: ${shouldReconnect}`);
             
             if (shouldReconnect) {
-                addLog('Attempting to reconnect in 3 seconds...');
+                addLog('Tentando reconectar em 3 segundos...');
                 setTimeout(connectToWhatsApp, 3000);
             }
         } else if (connection === 'open') {
-            connectionStatus = 'Connected successfully!';
+            connectionStatus = 'Conectado com sucesso!';
             qrCodeData = null;
-            addLog('WhatsApp connection opened successfully!');
+            addLog('Conexão com WhatsApp aberta com sucesso!');
         }
 
         connectionInfo = { ...connectionInfo, ...update };
     });
 
     sock.ev.on('creds.update', () => {
-        addLog('Credentials updated and saved.');
+        addLog('Credenciais atualizadas e salvas.');
         saveCreds();
     });
 }
@@ -96,6 +96,6 @@ app.get('/status', (_req, res) => {
 });
 
 app.listen(port, () => {
-    addLog(`Server running at http://localhost:${port}`);
+    addLog(`Servidor rodando em http://localhost:${port}`);
     connectToWhatsApp();
 });
