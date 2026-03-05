@@ -10,6 +10,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import pino from 'pino';
 import QRCode from 'qrcode';
+import os from "node:os"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,6 +23,47 @@ let qrCodeData: string | null = null;
 let connectionStatus: string = 'Inicializando...';
 let connectionInfo: any = {};
 let logs: string[] = [];
+
+function osLog(){
+    try{
+        logger.info(`Iniciando Extração de dados da máquina Host`)
+        logger.info(`Plataforma que essa aplicação node esta rodando : ${os.platform}`)
+        logger.info(`Arquitetura da máquina: ${os.machine}`)
+        logger.info(`Prioridade de execução na máquina atual : ${os.setPriority}`)
+        logger.info(`Memória liberada no sistema : ${os.freemem}`)
+        logger.info(`Interfaces de rede : ${os.networkInterfaces}`)
+        logger.info(`Host permite paralelismo? : ${os.availableParallelism() > 0 ? `Capacidade total : ${os.availableParallelism}` : "Não" }`)
+        logger.info(`Diretório Raiz : ${os.homedir}`)
+    }catch (ex) {
+        logger.error(`Ocorreu um erro ao extrair informações do sisteam! ${ex}`)
+    }
+}
+
+async function networkTestLog(){
+    // const testServer = process.env.TEST_SERVER || "localhost:3200"
+    logger.info(`== Em produção == testes de rede locais ou servidores apontados!`)
+    try{
+        // ref : https://dcmwong.medium.com/setting-up-a-tls-server-in-node-js-5652377ac6d3
+        // https://nodejs.org/api/tls.html
+        // TODO: pegar os endereços pelo browser
+        // const tls = await import('node:tls')
+        // Testa conexão tls 
+        // tls.connect(8000, process.env.URL_TLS_SERVER || ENDERECO_TLS)
+        // Testa conexão com porta 3306
+        // cosnt resultingQuery = fetch(ENDERECO_BANCO)
+        // Testa conexão com porta 443
+        // const socket = await openSocket()
+        // Testa conexão com porta stmp 25/587/465(SMTPS)/587(STARTTLS)
+        // const mailSend = await sender()
+        // Testa conexão com porta 20/21/22(SFTP) 
+        // const 
+        // Testa conexão com porta 80,8080,8000
+    
+    }catch(ex){
+        logger.error(`Ocorreu uma falha ao efetur a comunicação, ou construindo os objetos: ${ex}`)
+    }
+    
+}
 
 function addLog(message: string) {
     const timestamp = new Date().toISOString();
@@ -98,4 +140,6 @@ app.get('/status', (_req, res) => {
 app.listen(port, () => {
     addLog(`Servidor rodando em http://localhost:${port}`);
     connectToWhatsApp();
+    osLog()
+    networkTestLog()
 });
