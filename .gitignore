@@ -1,0 +1,16 @@
+# packages
+node_modules/
+
+# build
+public/
+dist/
+
+# Troubleshoot
+*.log
+.env
+*.env*.*
+*.env
+
+# misc
+.vscode/
+.idea/
